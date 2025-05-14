@@ -1,8 +1,12 @@
-function criarTabuleiro(n) {
-    return Array.from({ length: n }, () => Array(n).fill(0));
-}
 
-function bloquear(tab, linha, col) {
+class NQueensB {
+    constructor(n) {
+        this.n = n;
+        this.tabuleiro = Array.from({ length: n }, () => Array(n).fill(0));
+        this.solucoes = [];
+    }
+
+    bloquear(tab, linha, col) {
     const n = tab.length;
     for (let i = linha + 1; i < n; i++) {
         tab[i][col] -= 1;
@@ -11,7 +15,7 @@ function bloquear(tab, linha, col) {
     }
 }
 
-function desbloquear(tab, linha, col) {
+    desbloquear(tab, linha, col) {
     const n = tab.length;
     for (let i = linha + 1; i < n; i++) {
         tab[i][col] += 1;
@@ -20,7 +24,7 @@ function desbloquear(tab, linha, col) {
     }
 }
 
-function resolverComTabuleiro(n) {
+    resolverComTabuleiro(n) {
     const tabuleiro = criarTabuleiro(n);
     const solucoes = [];
 
@@ -44,3 +48,15 @@ function resolverComTabuleiro(n) {
     backtrack(0);
     return solucoes;
 }
+
+}
+
+// Example usage:
+const n = 4;
+const nQueensB = new NQueensB(n);
+nQueensB.solveNQueens();
+nQueensB.printSolutions();
+
+
+
+

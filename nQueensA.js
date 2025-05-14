@@ -1,4 +1,12 @@
-function resolverOtimizado(n) {
+
+
+class nQueensA {
+
+    constructor() {
+        this.resolverOtimizado = this.resolverOtimizado.bind(this);
+    }
+
+resolverOtimizado(n) {
     const colunas = Array(n).fill(false);
     const diag1 = Array(2 * n - 1).fill(false); // linha + coluna
     const diag2 = Array(2 * n - 1).fill(false); // linha - coluna + n - 1
@@ -29,3 +37,10 @@ function resolverOtimizado(n) {
     backtrack(0);
     return solucoes;
 }
+}
+
+// Example usage:
+const n = 4;
+const nQueensA = new nQueensA();
+const solucoes = nQueensA.resolverOtimizado(n);
+console.log("Soluções encontradas:", solucoes);
