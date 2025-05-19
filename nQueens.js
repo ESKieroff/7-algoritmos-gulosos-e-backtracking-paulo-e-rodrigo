@@ -1,4 +1,4 @@
-
+const fs = require('fs');
 class nQueens {
   constructor(n) {
     this.n = n;
@@ -14,6 +14,7 @@ class nQueens {
     }
     return true;
   }
+
   solveNQueensUtil(row) {
     if (row === this.n) {
       this.solutions.push(this.board.map(r => r.slice()));
@@ -27,20 +28,33 @@ class nQueens {
       }
     }
   }
+
   solveNQueens() {
     this.solveNQueensUtil(0);
     return this.solutions;
   }
-  printSolutions() {
-    this.solutions.forEach((solution, index) => {
-      console.log(`Solution ${index + 1}:`);
-      solution.forEach(row => console.log(row.join(" ")));
-      console.log();
-    });
+
+  printStats(tempoMs) {
+    console.log(`Quantidade de soluções encontradas: ${this.solutions.length}`);
+    console.log(`Tempo decorrido: ${tempoMs.toFixed(2)} ms`);
   }
 }
-// Example usage:
-const n = 4;
-const nQueens = new nQueens(n);
-nQueens.solveNQueens();
-nQueens.printSolutions();
+
+// Exemplo de uso:
+const n = 8;
+const nQ = new nQueens(n);
+const inicio = performance.now();
+nQ.solveNQueens();
+const fim = performance.now();
+nQ.printStats(fim - inicio);
+
+// Salvar soluções em solutionsN.txt
+const solutionsText = nQ.solutions
+  .map((solution, idx) =>
+    `Solução ${idx + 1}:\n` +
+    solution.map(row =>
+      row.map(cell => (cell === 1 ? 'Q' : '.')).join('')
+    ).join('\n') +
+    '\n'
+  ).join('\n');
+fs.writeFileSync('solutionsN.txt', solutionsText);

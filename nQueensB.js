@@ -1,3 +1,4 @@
+const fs = require('fs');
 
 class NQueensB {
     constructor(n) {
@@ -7,56 +8,79 @@ class NQueensB {
     }
 
     bloquear(tab, linha, col) {
-    const n = tab.length;
-    for (let i = linha + 1; i < n; i++) {
-        tab[i][col] -= 1;
-        if (col - (i - linha) >= 0) tab[i][col - (i - linha)] -= 1;
-        if (col + (i - linha) < n) tab[i][col + (i - linha)] -= 1;
+        const n = tab.length;
+        for (let i = linha + 1; i < n; i++) {
+            tab[i][col] -= 1;
+            if (col - (i - linha) >= 0) tab[i][col - (i - linha)] -= 1;
+            if (col + (i - linha) < n) tab[i][col + (i - linha)] -= 1;
+        }
     }
-}
 
     desbloquear(tab, linha, col) {
-    const n = tab.length;
-    for (let i = linha + 1; i < n; i++) {
-        tab[i][col] += 1;
-        if (col - (i - linha) >= 0) tab[i][col - (i - linha)] += 1;
-        if (col + (i - linha) < n) tab[i][col + (i - linha)] += 1;
+        const n = tab.length;
+        for (let i = linha + 1; i < n; i++) {
+            tab[i][col] += 1;
+            if (col - (i - linha) >= 0) tab[i][col - (i - linha)] += 1;
+            if (col + (i - linha) < n) tab[i][col + (i - linha)] += 1;
+        }
     }
-}
 
-    resolverComTabuleiro(n) {
-    const tabuleiro = criarTabuleiro(n);
-    const solucoes = [];
+    resolver() {
+        const n = this.n;
+        const tabuleiro = Array.from({ length: n }, () => Array(n).fill(0));
+        const solucoes = [];
 
-    function backtrack(linha) {
-        if (linha === n) {
-            const solucao = tabuleiro.map(row => row.indexOf(1));
-            solucoes.push([...solucao]);
+        const backtrack = (linha) => {
+            if (linha === n) {
+                // Monta a solução visual
+                const solucao = tabuleiro.map(row =>
+                    row.map(cell => cell === 1 ? 'Q' : '.').join('')
+                );
+                solucoes.push(solucao);
+                return;
+            }
+            for (let col = 0; col < n; col++) {
+                if (tabuleiro[linha][col] === 0) {
+                    tabuleiro[linha][col] = 1;
+                    this.bloquear(tabuleiro, linha, col);
+                    backtrack(linha + 1);
+                    this.desbloquear(tabuleiro, linha, col);
+                    tabuleiro[linha][col] = 0;
+                }
+            }
+        };
+
+        backtrack(0);
+        this.solucoes = solucoes;
+    }
+
+    printSolutions() {
+        if (this.solucoes.length === 0) {
+            console.log("Nenhuma solução encontrada.");
             return;
         }
-        for (let col = 0; col < n; col++) {
-            if (tabuleiro[linha][col] === 0) {
-                tabuleiro[linha][col] = 1;
-                bloquear(tabuleiro, linha, col);
-                backtrack(linha + 1);
-                desbloquear(tabuleiro, linha, col);
-                tabuleiro[linha][col] = 0;
-            }
-        }
+        this.solucoes.forEach((sol, idx) => {
+            console.log(`Solução ${idx + 1}:`);
+            sol.forEach(row => console.log(row));
+            console.log('');
+        });
     }
 
-    backtrack(0);
-    return solucoes;
+    printStats (tempoMs) {
+        console.log(`Tempo de execução: ${tempoMs} ms`);
+        console.log(`Número de soluções encontradas: ${this.solucoes.length}`);
+    }
 }
 
-}
+// Exemplo de uso no terminal:
+const n = 14;
+const nQueens = new NQueensB(n);
+const inicio = performance.now();
+nQueens.resolver();
+const fim = performance.now();
+nQueens.printStats(fim - inicio);
 
-// Example usage:
-const n = 4;
-const nQueensB = new NQueensB(n);
-nQueensB.solveNQueens();
-nQueensB.printSolutions();
-
-
-
-
+const solutionsText = nQueens.solucoes
+    .map((sol, idx) => `Solução ${idx + 1}:\n${sol.join('\n')}\n`)
+    .join('\n');
+fs.writeFileSync('nQueensB.txt', solutionsText);
