@@ -64,3 +64,5 @@ const solutionsText = nQueens.solucoes
     .map((sol, idx) => `Solução ${idx + 1}:\n${sol.join('\n')}\n`)
     .join('\n');
 fs.writeFileSync('solutionsA.txt', solutionsText);
+
+module.exports = NQueensA;

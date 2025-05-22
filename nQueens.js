@@ -58,3 +58,5 @@ const solutionsText = nQ.solutions
     '\n'
   ).join('\n');
 fs.writeFileSync('solutionsN.txt', solutionsText);
+
+module.exports = nQueens;
